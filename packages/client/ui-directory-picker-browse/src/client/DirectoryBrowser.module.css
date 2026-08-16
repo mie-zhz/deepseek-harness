@@ -2,7 +2,7 @@
  * headless here — mask, card, Escape only — and this module owns the figma
  * frame: 680×500 card (viewport-clamped; upsized from the figma 600×420),
  * header (title + crumbs, l3 separator),
- * the one-or-two-column Miller content, and the bordered footer. */
+ * the single-column listing, and the bordered footer. */
 
 /* Doubled class beats Modal's own .dialog regardless of stylesheet order. */
 /* Short viewports clamp the card: header/footer are flex-none and the
@@ -76,22 +76,11 @@
 
 /* Deep chains scroll inside the trail (the effect pins the tail into view)
  * so the edit zone to the right never leaves the bar. */
-/* The Miller columns keep their own row so a status/error line below never
- * competes with the fixed column widths for horizontal space. */
-/* A narrow viewport shrinks the dialog below two fixed panes; the row
- * scrolls horizontally (the effect pins the child pane into view) so
- * descent never hides behind the Modal's clipping. */
-.millerRow {
+.listRow {
   display: flex;
   align-items: stretch;
   flex: 1 1 0;
   min-height: 0;
-  /* 12px of row gap on each side of the divider; the left side reads wider
-   * by the column's trailing 8px scrollbar clearance, which is deliberate —
-   * the thumb needs that room, the right pane's rows do not. */
-  gap: 12px;
-  overflow-x: auto;
-  scrollbar-width: none;
 }
 
 .crumbTrail {
@@ -187,9 +176,8 @@
   color: var(--dsw-alias-label-primary);
 }
 
-/* Miller content: symmetric 16px vertical padding so the divider clears the
- * header and footer rules evenly; each column scrolls alone (column widths
- * live at .column). */
+/* Listing content: symmetric 16px vertical padding so the column clears the
+ * header and footer rules evenly. */
 .content {
   display: flex;
   flex-direction: column;
@@ -197,32 +185,20 @@
   min-height: 0;
   /* Anchors the floating loading pill (.loadingFloat). */
   position: relative;
-  /* Right inset is slimmer than the left: the trailing column's own 8px
-   * scrollbar clearance makes up the optical difference. */
   padding: 16px 16px 16px 24px;
 }
 
-/* Columns split the row evenly around the divider (a solo column takes the
- * whole row); 256px is the floor below which the row scrolls (scrollbar
- * hidden, the effect pins the child pane into view) instead of squeezing
- * the panes. */
 .column {
   display: flex;
   flex-direction: column;
   gap: 2px;
   flex: 1 1 0;
-  min-width: 256px;
+  min-width: 0;
   overflow-y: auto;
   /* The themed scrollbar occupies the column's edge (styled scrollbars are
    * classic, gutter-taking ones); the extra clearance keeps the row pills
    * clear of the thumb. */
   padding-right: 8px;
-}
-
-.divider {
-  flex: none;
-  width: 1px;
-  background: var(--dsw-alias-border-l3);
 }
 
 .rowSeat {
@@ -249,20 +225,9 @@
   background: var(--dsw-alias-interactive-bg-hover);
 }
 
-/* Selection: pill fill + the open-folder glyph in the info accent. */
-.rowSelected,
-.rowSelected:hover {
-  background: var(--dsw-alias-interactive-bg-active, var(--dsw-alias-interactive-bg-hover));
-}
-
 .rowIcon {
   flex: none;
   color: var(--dsw-alias-label-secondary);
-}
-
-.rowIconSelected {
-  flex: none;
-  color: var(--dsw-alias-button-info-fill);
 }
 
 .rowName {

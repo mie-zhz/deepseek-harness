@@ -66,7 +66,7 @@ describe('web e2e: workspace management (create / rename / flat view / hover aff
     await dialog.getByRole('button', { name: 'New folder' }).click()
     await page.getByLabel('Folder name').fill(name)
     await page.getByRole('button', { name: 'Create', exact: true }).click()
-    // Creating selects the new folder in the listing; Open adopts it.
+    // Creating enters the new folder; Open adopts it.
     await dialog.getByRole('button', { name: 'Open', exact: true }).click()
     await dialog.waitFor({ state: 'hidden', timeout: 10_000 })
     await expect.poll(
@@ -435,21 +435,19 @@ describe('web e2e: workspace management (create / rename / flat view / hover aff
     await expect.poll(() => dialog.getByText('alpha', { exact: true }).count(), { timeout: 10_000 }).toBe(1)
     await dialog.getByRole('button', { name: 'Edit path' }).click()
     const path = dialog.getByLabel('Edit path')
-    // A directory part no pane lists: the panes walk to it, landing the
-    // ordinary two-pane Miller view (level | its children) with the editor
-    // still up and the draft intact.
+    // A directory part no pane lists: the listing walks to it, landing the
+    // ordinary single column with the editor still up and the draft intact.
     await path.fill(`${join(staged, 'alpha')}${sep}`)
     await expect.poll(() => dialog.getByText('only-under-alpha', { exact: true }).count(), { timeout: 10_000 }).toBe(1)
-    await expect.poll(() => dialog.getByRole('list').count(), { timeout: 10_000 }).toBe(2)
+    await expect.poll(() => dialog.getByRole('list').count(), { timeout: 10_000 }).toBe(1)
     expect(await path.inputValue()).toBe(`${join(staged, 'alpha')}${sep}`)
-    // Erasing back past the separator walks the panes up, so the level being
-    // typed is the last pane again (its children no longer stand to its
-    // right) and the tail filters it.
+    // Erasing back past the separator walks the listing up, so the level being
+    // typed is the listed column again and the tail filters it.
     await path.fill(`${staged}${sep}al`)
     await expect.poll(() => dialog.getByText('only-under-alpha', { exact: true }).count(), { timeout: 10_000 }).toBe(0)
     expect(await dialog.getByText('alpha', { exact: true }).count()).toBe(1)
     expect(await dialog.getByText('beta', { exact: true }).count()).toBe(0)
-    await expect.poll(() => dialog.getByRole('list').count(), { timeout: 10_000 }).toBe(2)
+    await expect.poll(() => dialog.getByRole('list').count(), { timeout: 10_000 }).toBe(1)
     // A tail nobody matches is a name still being spelled: the level shows
     // whole instead of emptying under it.
     await path.fill(`${staged}${sep}zzz`)
